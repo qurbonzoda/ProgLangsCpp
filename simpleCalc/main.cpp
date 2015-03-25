@@ -16,9 +16,9 @@
     Negative sign should be separately from the number e.g  "- 3 + 4" or "1 + 3 - 4 * ( - 3 )"
 */
 
-#include<iostream>
-#include<algorithm>
-#include<stack>
+#include <iostream>
+#include <algorithm>
+#include <stack>
 
 using namespace std;
 const int MAXLENGTH = 9; //The max length of valid integer
@@ -33,12 +33,12 @@ void DoOperation (stack<int> &numbers, stack<char> &operations); /* Implements "
 bool ValidityCheck (string &value, string &lastValue); // checks if "string &value" may come after "string &lastValue"
 bool IsOperator (string value); // checks if "string &value" is an operator
 int ToInt (string &value); // returns integer value of "string &value"
-void Terminate (); // informs that the given expression is invalid and exits
+void Terminate (const string &value); // informs that the given expression is invalid and exits
 
 string lastValue = "#"; // the last value before the current value
 
 int Calc (string &expression, int &start, bool inBracket) { /* the recursion witch returns result of
-                            expression inside brackets () and the whole expression. boolean inBreak
+                            expression inside brackets () and the whole expression. boolean inBracket
                             is true if Calc is calculating inside brackets.*/
     int a;
     string value;
@@ -46,15 +46,18 @@ int Calc (string &expression, int &start, bool inBracket) { /* the recursion wit
     stack<char> operations;
     for (int i = start; i < expression.length(); i++) {
         int j = expression.find(' ', i);
-        if (j < 0)
+        if (j < 0) {
             j = expression.length();
+        }
         value = expression.substr(i, j - i);
         if ((lastValue == "#" || lastValue == "(") && value == "-") {
             numbers.push(0);
             lastValue = "0";
         }
-        if (!ValidityCheck(value, lastValue))
-            Terminate();
+        if (!ValidityCheck(value, lastValue)) {
+            Terminate(value);
+        }
+        //cout << "value -> " << value << endl;
         if (value == "(") {
             start = i + 2;
             lastValue = value;
@@ -68,8 +71,9 @@ int Calc (string &expression, int &start, bool inBracket) { /* the recursion wit
                 exit(0);
             }
             start = i + 2;
-            while (!operations.empty())
+            while (!operations.empty()) {
                 DoOperation(numbers, operations);
+            }
             lastValue = value;
             return numbers.top();
         }
@@ -83,8 +87,12 @@ int Calc (string &expression, int &start, bool inBracket) { /* the recursion wit
         cout<<"Brackets placed incorrectly"<<endl;
         exit(0);
     }
-    while (!operations.empty())
+    while (!operations.empty()) {
+        if (numbers.size() < 2) {
+            Terminate("");
+        }
         DoOperation(numbers, operations);
+    }
     return numbers.top();
 }
 
@@ -93,6 +101,8 @@ int main() { /* the main function - the start. reads the expression and calls fu
     //freopen("input.txt", "r", stdin); freopen("output.txt", "w", stdout);
     string expression;
     int start = 0;
+    cout << "Please enter an expression. All symbols should be separated by single space except digits of a number" << endl;
+    cout << "\"- 335 + 4\" and \"1 + 37 - 41 * ( - 3 )\" are examples of valid expression" << endl;
     getline(cin, expression);
     cout<<Calc (expression, start, false);
     return 0;
@@ -100,29 +110,37 @@ int main() { /* the main function - the start. reads the expression and calls fu
 
 void Operate (stack<int> &numbers, stack<char> &operations, string &value){
     if (value == "+" || value == "-") {
-        while (!operations.empty())
+        while (!operations.empty()) {
             DoOperation(numbers, operations);
-        if (value == "+")
+        }
+        if (value == "+") {
             operations.push('+');
-        else
+        }
+        else {
             operations.push('-');
+        }
     }
 
     else if (value == "/" || value == "*" || value == "%") {
         while (!operations.empty()) {
-            if (operations.top() == '+' || operations.top() == '-')
+            if (operations.top() == '+' || operations.top() == '-') {
                 break;
+            }
             DoOperation(numbers, operations);
         }
-        if (value == "/")
+        if (value == "/") {
             operations.push('/');
-        else if (value == "*")
+        }
+        else if (value == "*") {
             operations.push('*');
-        else
+        }
+        else {
             operations.push('%');
+        }
     }
-    else
-        numbers.push ( ToInt(value) );
+    else {
+        numbers.push(ToInt(value));
+    }
 }
 
 int ToInt (string &value) {
@@ -135,35 +153,43 @@ int ToInt (string &value) {
 }
 
 bool ValidityCheck (string &value, string &lastValue) {
-    if (IsOperator(value))
-    if (lastValue == "#" || (lastValue != ")" && !isdigit(lastValue[0])))
-        return false;
-    else if (value == "(")
-    if (lastValue != "#" && lastValue != "(" && !IsOperator(lastValue))
-        return false;
-    else if (value == ")")
-    if (lastValue != ")" && !isdigit(lastValue[0]))
-        return false;
+    if (IsOperator(value)) {
+        if (lastValue == "#" || (lastValue != ")" && !isdigit(lastValue[0])))
+            return false;
+    }
+    else if (value == "(") {
+        if (lastValue != "#" && lastValue != "(" && !IsOperator(lastValue))
+            return false;
+    }
+    else if (value == ")") {
+        if (lastValue != ")" && !isdigit(lastValue[0]))
+            return false;
+    }
     else {
-        if (value.length() > MAXLENGTH)
+        if (value.length() > MAXLENGTH) {
             return false;
-        for (int i = 0; i < value.length(); i++)
-            if (!isdigit(value[i]))
+        }
+        for (int i = 0; i < value.length(); i++) {
+            if (!isdigit(value[i])) {
                 return false;
-        if (lastValue != "#" && !IsOperator(lastValue) && lastValue != "(")
+            }
+        }
+        if (lastValue != "#" && !IsOperator(lastValue) && lastValue != "(") {
             return false;
+        }
     }
     return true;
 }
 
-void Terminate () {
-    cout<<"Invalid expression"<<endl;
+void Terminate (const string &value) {
+    cout<<"Invalid expression: " << value <<endl;
     exit(0);
 }
 
 bool IsOperator (string value) {
-    if (value == "+" || value == "-" || value == "%" || value == "/" || value == "*")
+    if (value == "+" || value == "-" || value == "%" || value == "/" || value == "*") {
         return true;
+    }
     return false;
 }
 
@@ -175,10 +201,12 @@ void DoOperation (stack<int> &numbers, stack<char> &operations) {
     char this_operator = operations.top();
     operations.pop();
 
-    if (this_operator == '-')
+    if (this_operator == '-') {
         numbers.push(a - b);
-    else if (this_operator == '+')
+    }
+    else if (this_operator == '+') {
         numbers.push(a + b);
+    }
     else if (this_operator == '%') {
         if (b == 0) {
             cout<<"Error: 'dividend % 0' => Division by 0"<<endl;
@@ -193,6 +221,7 @@ void DoOperation (stack<int> &numbers, stack<char> &operations) {
         }
         numbers.push(a / b);
     }
-    else
+    else {
         numbers.push(a * b);
+    }
 }
