@@ -79,7 +79,7 @@ int main() {
     }
     Field *field = new Field(height, width);
     field->Check();
-    int minH = height, minW = width, maxH = -1, maxW = -1;
+    int minH = height + 1, minW = width + 1, maxH = -2, maxW = -2;
 
     selection:
     cout << "Do you want to enter starting positions?" << endl;
@@ -114,6 +114,16 @@ int main() {
         for (int i = 0; i < aliveCells; i++) {
             int h, w;
             cin >> h >> w;
+            if (h < 0 || h >= height) {
+                cout << "Invalid row number. Please enter correct coordinates" << endl;
+                i--;
+                continue;
+            }
+            if (w < 0 || w >= width) {
+                cout << "Invalid column number. Please enter correct coordinates" << endl;
+                i--;
+                continue;
+            }
             Cell *cur = field->getCell(h, w);
             assert (cur != NULL);
             if (cur->getState() == _alive) {
@@ -144,9 +154,9 @@ int main() {
     for (int k = 0; k < steps; ++k) {
         height = field->getHeight();
         width = field->getWidth();
-        minH = height;
-        minW = width;
-        maxH = maxW = -1;
+        minH = height + 1;
+        minW = width + 1;
+        maxH = maxW = -2;
         int popBeforeStep = field->getAliveCells();
         changes.clear();
 
@@ -194,19 +204,22 @@ int main() {
             else {
                 cout << "The average ratio born / dead: " << (double)born / died << endl;
             }
+            cout << endl;
             born = died = 0;
         }
         //field->Draw();
     }
-
-    cout << "The end of the simulation" << endl;
-    cout << "Population growth: " << field->getAliveCells() - startPop << endl;
+    cout << endl;
+    cout << "The end of the simulation" << endl << endl;
+    cout << "Population growth: " << field->getAliveCells() - startPop <<endl;
+    cout << "Population was: " << startPop <<endl;
+    cout << "Population became: " << field->getAliveCells() << endl << endl;
     if (noChange < steps) {
-        cout << "After " << noChange << "-th step population size did not change" << endl;
+        cout << "After " << noChange << "-th step population size did not change" << endl << endl;
     }
     cout << "Size of the field at the end of the simulation:" << endl;
     cout << "Height: " << field->getHeight() << endl;
-    cout << "Width: " << field->getWidth() << endl;
+    cout << "Width: " << field->getWidth() << endl << endl;
     cout << "Do you want to see the field?" << endl;
     cout << "Y: Yes, show me the field" << endl;
     cout << "N: No, I don't need it" << endl;

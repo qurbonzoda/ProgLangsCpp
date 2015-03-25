@@ -257,42 +257,62 @@ class Field {
 
     // shrinks the left side of the field
     void shrinkLeft() {
-        head = head->getRight();
-        Cell *_i = head;
-        deleteVertical(_i, 1);
-        width--;
+        if (head != NULL) {
+            head = head->getRight();
+            Cell *_i = head;
+            if (head != NULL) {
+                deleteVertical(_i, 1);
+            }
+        }
+        if (width > 0) {
+            width--;
+        }
     }
 
     // shrinks the right side of the field
     void shrinkRight() {
-        Cell *_i = head;
-        for(int i = 1; i < width - 1; i++) {
+        if (head != NULL) {
+            Cell *_i = head;
+            for (int i = 1; i < width - 1; i++) {
+                assert (_i != NULL);
+                _i = _i->getRight();
+            }
             assert (_i != NULL);
-            _i = _i->getRight();
+            deleteVertical(_i, 0);
         }
-        assert (_i != NULL);
-        deleteVertical(_i, 0);
-        width--;
+        if (width > 0) {
+            width--;
+        }
     }
 
     // shrinks the upper side of the field
     void shrinkUp() {
-        head = head->getDown();
-        Cell *_i = head;
-        deleteHorizontal(_i, 1);
-        height--;
+        if (head != NULL) {
+            head = head->getDown();
+            Cell *_i = head;
+            if (head != NULL) {
+                deleteHorizontal(_i, 1);
+            }
+        }
+        if (height > 0) {
+            height--;
+        }
     }
 
     // shrinks the lower side of the field
     void shrinkDown() {
-        Cell *_i = head;
-        for(int i = 1; i < height - 1; i++) {
+        if (head != NULL) {
+            Cell *_i = head;
+            for (int i = 1; i < height - 1; i++) {
+                assert (_i != NULL);
+                _i = _i->getDown();
+            }
             assert (_i != NULL);
-            _i = _i->getDown();
+            deleteHorizontal(_i, 0);
         }
-        assert (_i != NULL);
-        deleteHorizontal(_i, 0);
-        height--;
+        if (height > 0) {
+            height--;
+        }
     }
 
     // returns amount of alive adjecents of the given Cell;
