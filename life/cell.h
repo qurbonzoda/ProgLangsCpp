@@ -17,50 +17,26 @@ class Cell {
     cellState state;
 
     public:
+    Cell(); // Cell constructer defines adjecents(pointers) NULL and defines the state of the Cell dead
 
-    Cell() {
-        state = _dead;
-        left = right = up = down = NULL;
-    }
+    Cell *getLeft() const; // returns *left cell
 
-    Cell *getLeft() const {
-        return left;
-    }
+    Cell *getRight() const; // returns *right cell
 
-    Cell *getRight() const {
-        return right;
-    }
+    Cell *getUp() const; // returns *up cell
 
-    Cell *getUp() const {
-        return up;
-    }
+    Cell *getDown() const; // returns *down cell
 
-    Cell *getDown() const {
-        return down;
-    }
+    cellState const &getState() const; // returns cell state(dead or alive)
 
-    cellState const &getState() const {
-        return state;
-    }
+    void setLeft(Cell *left); // sets left cell
 
-    void setLeft(Cell *left) {
-        Cell::left = left;
-    }
+    void setUp(Cell *up); // sets up cell
 
-    void setUp(Cell *up) {
-        Cell::up = up;
-    }
+    void setRight(Cell *right); // sets right cell
 
-    void setRight(Cell *right) {
-        Cell::right = right;
-    }
+    void setDown(Cell *down); // sets down cell
 
-    void setDown(Cell *down) {
-        Cell::down = down;
-    }
-
-    void setState(cellState const &state) {
-        Cell::state = state;
-    }
+    void setState(cellState const &state); // sets cell state
 };
 #endif //_LIFE_CELL_H_

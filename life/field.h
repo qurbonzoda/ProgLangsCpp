@@ -25,79 +25,54 @@ public:
     // head refers to the leftmost and upmost cell
     Field(int height, int width);
 
-    int getAliveCells() const {
-        return aliveCells;
-    }
+    int getAliveCells() const; // returns amount of populated cells
 
-    int getHeight() const {
-        return height;
-    }
+    int getHeight() const; // returns height of the field
 
-    int getWidth() const {
-        return width;
-    }
+    int getWidth() const; // returns height of the field
 
-    Cell *getHead() const {
-        return head;
-    }
+    Cell *getHead() const; // returns upmost and leftmost cell of the field
 
-    // returns pointer to the Cell at xth row and yth column
-    Cell *getCell(int const &y, int const &x);
+    Cell *getCell(int const &y, int const &x); // returns pointer to the Cell at xth row and yth column
 
-    void moveLeft();
+    void moveLeft(); // moves the viewer left
 
-    void moveRight();
+    void moveRight(); // moves the viewer right
 
-    void moveUp();
+    void moveUp(); // moves the viewer up
 
-    void moveDown();
+    void moveDown(); // moves the viewer down
 
-    // changes the state of the given Cell to the given state
-    void setCellState(Cell *cell, cellState const &state);
+    void setCellState(Cell *cell, cellState const &state); // changes the state of the given Cell to the given state
 
-    // draws the field. "." means dead Cell, whereas "#" alive
-    void Draw();
+    void Draw(); // draws the field. "." means dead Cell, whereas "#" alive
 
-    //checks if the field has correct structure. just for debugging
-    void Check();
+    void Check(); //checks if the field has correct structure. just for debugging
 
-    // creats a column and stick it to the left or right side of the field depending on the given flag
-    void buildVertical(Cell *_i, Cell *_j, bool flag);
+    void buildVertical(Cell *_i, Cell *_j, bool flag); // creats a column and stick it to the left or right side of the field depending on the given flag
 
-    // creats a row and stick it to the up or down side of the field depending on the given flag
-    void buildHorizontal(Cell *_i, Cell *_j, bool flag);
+    void buildHorizontal(Cell *_i, Cell *_j, bool flag); // creats a row and stick it to the up or down side of the field depending on the given flag
 
-    // expands the left side of the field sticking dead cells
-    void expandLeft();
+    void expandLeft(); // expands the left side of the field sticking dead cells
 
-    // expands the right side of the field sticking dead cells
-    void expandRight();
+    void expandRight(); // expands the right side of the field sticking dead cells
 
-    // expands the upper side of the field sticking dead cells
-    void expandUp();
+    void expandUp(); // expands the upper side of the field sticking dead cells
 
-    // expands the lower side of the field sticking dead cells
-    void expandDown();
+    void expandDown(); // expands the lower side of the field sticking dead cells
 
-    // deletes the left or right side of the field depending on the given flag
-    void deleteVertical(Cell *_i, bool flag);
+    void deleteVertical(Cell *_i, bool flag); // deletes the left or right side of the field depending on the given flag
 
-    // deletes the upper or lower side of the field depending on the given flag
-    void deleteHorizontal(Cell *_i, bool flag);
+    void deleteHorizontal(Cell *_i, bool flag); // deletes the upper or lower side of the field depending on the given flag
 
-    // shrinks the left side of the field
-    void shrinkLeft();
+    void shrinkLeft(); // shrinks the left side of the field
 
-    // shrinks the right side of the field
-    void shrinkRight();
+    void shrinkRight(); // shrinks the right side of the field
 
-    // shrinks the upper side of the field
-    void shrinkUp();
+    void shrinkUp(); // shrinks the upper side of the field
 
-    // shrinks the lower side of the field
-    void shrinkDown();
+    void shrinkDown(); // shrinks the lower side of the field
 
-    // returns amount of alive adjecents of the given Cell;
-    int aliveAdjecents(Cell *cell);
+    int aliveAdjecents(Cell *cell); // returns amount of alive adjecents of the given Cell;
 };
 #endif //_LIFE_FIELD_H_

@@ -4,4 +4,4 @@ project(life)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES main.cpp)
-add_executable(life ${SOURCE_FILES} cell.h field.h)
+add_executable(life ${SOURCE_FILES} cell.h field.h cell.cpp field.cpp)
