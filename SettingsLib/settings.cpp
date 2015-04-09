@@ -4,13 +4,15 @@
 
 #include "settings.h"
 
-/*settings::param::param(const param & other) {
+settings::param::param(const settings::param & other) {
     this->value = other.value;
     this->name = other.name;
-}*/
-settings::param::param(string const & name, string const & value) {
+    this->parent = other.parent;
+}
+settings::param::param(const string & name, string value, settings *parent) {
     this->value = value;
     this->name = name;
+    this->parent = parent;
 }
 
 settings::param::operator std::string() const {
@@ -28,67 +30,82 @@ settings::param::operator double() const {
 
 settings::param & settings::param::operator=(std::string const & value) {
     this->value = value;
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator=(int value) {
     this->value = to_string(value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator=(bool value) {
     this->value = to_string(value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator=(double value) {
     this->value = to_string(value);
+    parent->set(this->name, this->value);
     return *this;
 }
 
 settings::param & settings::param::operator+=(std::string const & value) {
     this->value += value;
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator+=(int value) {
     this->value = to_string(stoi(this->value) + value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator+=(double value) {
     this->value = to_string(stod(this->value) + value);
+    parent->set(this->name, this->value);
     return *this;
 }
 
 settings::param & settings::param::operator-=(int value) {
     this->value = to_string(stoi(this->value) - value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator-=(double value) {
     this->value = to_string(stod(this->value) - value);
+    parent->set(this->name, this->value);
     return *this;
 }
 
 settings::param & settings::param::operator*=(int value) {
     this->value = to_string(stoi(this->value) * value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator*=(double value) {
     this->value = to_string(stod(this->value) * value);
+    parent->set(this->name, this->value);
     return *this;
 }
 
 settings::param & settings::param::operator/=(int value) {
     this->value = to_string(stoi(this->value) / value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator/=(double value) {
     this->value = to_string(stod(this->value) / value);
+    parent->set(this->name, this->value);
     return *this;
 }
 
 settings::param & settings::param::operator|=(bool value) {
     this->value = (value ? "true" : this->value);
+    parent->set(this->name, this->value);
     return *this;
 }
 settings::param & settings::param::operator&=(bool value) {
     this->value = (value ? this->value : "false");
+    parent->set(this->name, this->value);
     return *this;
 }
 bool settings::param::is_empty() const {
@@ -100,16 +117,11 @@ settings::settings(const string & filename) {
     reload();
 }
 string const & settings::get(std::string const & name, std::string const & def) const {
-    if(params.find(name) == params.end()) {
-        return def;
-    }
-    else {
-        return params.find(name)->second;
-    }
+    return (params.find(name) == params.end() ? def : params.find(name)->second);
 }
 void settings::set(std::string const &name, std::string const &value) {
     this->params[name] = value;
-    this->update();
+    this->updateFile();
 }
 void settings::reset() {
     std::ofstream(filename, std::ofstream::trunc);
@@ -125,14 +137,13 @@ void settings::reload() {
     }
     input.close();
 }
-
 const settings::param settings::operator[](std::string const & name) const {
-    return *(new param(name, params.at(name)));
+    return param(name, params.at(name), this);
 }
 settings::param settings::operator[](std::string const & name) {
-    return *(new param(name, params.at(name)));
+    return param(name, params.at(name), this);
 }
-void settings::update() {
+void settings::updateFile() {
     std::ofstream output(filename);
     for (auto item : params) {
         output << item.first << endl;

@@ -16,11 +16,13 @@ using namespace std;
 class settings {
 public:
     class param {
+        friend class settings;
     private:
-        //param(param const &);
-    public:
+        param(const param &);
+        param(const string & name, string value, settings *parent);
         string name, value;
-        param(string const &, string const &);
+        settings *parent;
+    public:
         operator std::string() const;
         operator int() const;
         operator bool() const;
@@ -46,11 +48,13 @@ public:
 
         param & operator|=(bool);
         param & operator&=(bool);
+
         bool is_empty() const;
     };
 
     // Main functions
 
+    friend class param;
 /**
      * Construct settings store
      * and load data from file (if exists)
@@ -74,8 +78,7 @@ public:
      * \param value New setting value
      */
 
-    void set(std::string const & name,
-            std::string const & value);
+    void set(std::string const & name, std::string const & value);
 
 /**
      * Reset all settings
@@ -109,7 +112,7 @@ public:
 private:
     string filename;
     map<string, string>params;
-    void update();
+    void updateFile();
 };
 
 #endif //_SETTINGSLIB_SETTINGS_H_
