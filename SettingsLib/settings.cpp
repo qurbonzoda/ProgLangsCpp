@@ -3,16 +3,17 @@
 //
 
 #include "settings.h"
-
+/*
 settings::param::param(const settings::param & other) {
     this->value = other.value;
     this->name = other.name;
     this->parent = other.parent;
 }
-settings::param::param(const string & name, string value, settings *parent) {
+*/
+settings::param::param(const string & name, std::string value, const settings *parent) {
     this->value = value;
     this->name = name;
-    this->parent = parent;
+    this->parent = const_cast<settings* const>(parent);
 }
 
 settings::param::operator std::string() const {
@@ -137,11 +138,11 @@ void settings::reload() {
     }
     input.close();
 }
-const settings::param settings::operator[](std::string const & name) const {
-    return param(name, params.at(name), this);
+const settings::param settings::operator[](std::string const &name) const {
+    return param(name, params.find(name)->second, this);
 }
 settings::param settings::operator[](std::string const & name) {
-    return param(name, params.at(name), this);
+    return param(name, params.find(name)->second, this);
 }
 void settings::updateFile() {
     std::ofstream output(filename);

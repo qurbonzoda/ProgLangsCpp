@@ -18,8 +18,8 @@ public:
     class param {
         friend class settings;
     private:
-        param(const param &);
-        param(const string & name, string value, settings *parent);
+        //param(const param &);
+        param(const string &, const string , const settings *);
         string name, value;
         settings *parent;
     public:
