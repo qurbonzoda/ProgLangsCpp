@@ -17,7 +17,7 @@ settings::param::param(const string & name, std::string value, const settings *p
 }
 
 settings::param::operator std::string() const {
-    return value;
+    return string(value);
 }
 settings::param::operator bool() const {
     return (value == "true");
@@ -28,8 +28,11 @@ settings::param::operator int() const {
 settings::param::operator double() const {
     return stod(value);
 }
-
+settings::param & settings::param::operator=(char const * value) {
+    return this->operator=(std::string(value));
+}
 settings::param & settings::param::operator=(std::string const & value) {
+    //cout << "string: " << value << endl;
     this->value = value;
     parent->set(this->name, this->value);
     return *this;
@@ -40,6 +43,7 @@ settings::param & settings::param::operator=(int value) {
     return *this;
 }
 settings::param & settings::param::operator=(bool value) {
+    //cout << "bool: " << value << endl;
     this->value = to_string(value);
     parent->set(this->name, this->value);
     return *this;
@@ -114,6 +118,9 @@ bool settings::param::is_empty() const {
 }
 
 settings::settings(const string & filename) {
+    if (!std::ifstream(filename).good()){
+        std::ofstream(filename);
+    }
     this->filename = filename;
     reload();
 }

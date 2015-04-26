@@ -28,6 +28,7 @@ public:
         operator bool() const;
         operator double() const;
 
+        param & operator=(char const *value);
         param & operator=(std::string const &);
         param & operator=(int);
         param & operator=(bool);
